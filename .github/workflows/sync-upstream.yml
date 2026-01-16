@@ -1,0 +1,33 @@
+name: sync-upstream
+
+on:
+  schedule:
+    - cron: "30 1 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout fork
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Fetch upstream develop
+        run: |
+          git remote add upstream https://github.com/OpenBB-finance/OpenBB.git
+          git fetch upstream develop
+          git checkout -B upstream-sync upstream/develop
+
+      - name: Create PR to develop
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: upstream-sync
+          base: develop
+          title: "Sync from upstream OpenBB develop"
+          body: "Automated sync from OpenBB-finance/OpenBB upstream develop."
