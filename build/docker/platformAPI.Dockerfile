@@ -4,7 +4,7 @@ WORKDIR /app
 
 RUN pip install "openbb[all]"
 RUN pip install openbb-platform-api
-
+RUN pip install openbb-mcp-server
 EXPOSE 6900
 
 ENTRYPOINT ["openbb-api", "--host", "0.0.0.0"]
